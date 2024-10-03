@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Predictive Maintenance Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='index.css') }}"
+    />
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Predictive Maintenance Dashboard</h1>
+      </header>
+
+      <div class="grid">
+        <section class="card">
+          <h2>Enter Details for Prediction</h2>
+          <form method="POST">
+            <div class="form-group">
+              <label for="air_temp">Air temperature [K]</label>
+              <input
+                type="number"
+                id="air_temp"
+                step="0.001"
+                name="Air temperature [K]"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="process_temp">Process temperature [K]</label>
+              <input
+                type="number"
+                id="process_temp"
+                step="0.001"
+                name="Process temperature [K]"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="rotational_speed">Rotational speed [rpm]</label>
+              <input
+                type="number"
+                id="rotational_speed"
+                step="0.001"
+                name="Rotational speed [rpm]"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="torque">Torque [Nm]</label>
+              <input
+                type="number"
+                id="torque"
+                name="Torque [Nm]"
+                step="0.001"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="tool_wear">Tool wear [min]</label>
+              <input
+                type="number"
+                id="tool_wear"
+                step="0.001"
+                name="Tool wear [min]"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="type">Type</label>
+              <select id="type" name="Type" required>
+                <option value="L">Type L</option>
+                <option value="M">Type M</option>
+                <option value="H">Type H</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Predict</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <h2>Upload CSV for Batch Prediction</h2>
+          <form method="POST" enctype="multipart/form-data">
+            <div class="file-upload">
+              <i data-lucide="upload-cloud" class="file-upload-icon"></i>
+              <p>Click to upload or drag and drop</p>
+              <p>CSV file (MAX. 800x400px)</p>
+              <input
+                id="file-upload"
+                name="file"
+                type="file"
+                class="hidden"
+                accept=".csv"
+              />
+            </div>
+            <button type="submit" class="btn btn-success">Process Batch</button>
+          </form>
+        </section>
+      </div>
+
+      {% if prediction is not none %}
+      <section class="card">
+        <h2>Prediction Result</h2>
+        <div class="prediction-result">
+          <div>
+            <p>Status:</p>
+            <p
+              class="prediction-status {% if prediction == 'No Failure' %}status-success{% else %}status-failure{% endif %}"
+            >
+              {{ prediction }}
+            </p>
+          </div>
+          <img
+            src="{{ graph }}"
+            alt="Prediction Graph"
+            class="prediction-graph"
+          />
+        </div>
+      </section>
+      {% endif %}
+    </div>
+
+    <script>
+      lucide.createIcons();
+    </script>
+  </body>
+</html>
